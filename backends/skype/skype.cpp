@@ -216,6 +216,8 @@ bool Skype::loadSkypeBuddies() {
 		std::vector<std::string> grps;
 		boost::split(grps, groups, boost::is_any_of(","));
 		BOOST_FOREACH(std::string grp, grps) {
+			if (grp.empty()) continue;
+
 			std::vector<std::string> data;
 			std::string name = send_command("GET GROUP " + grp + " DISPLAYNAME");
 
@@ -235,7 +237,7 @@ bool Skype::loadSkypeBuddies() {
 			}
 			boost::split(data, users, boost::is_any_of(","));
 			BOOST_FOREACH(std::string u, data) {
-				group_map[u] = grp;
+				if (!u.empty()) group_map[u] = grp;
 			}
 		}
 	}
@@ -433,6 +435,8 @@ void Skype::handleSkypeMessage(std::string &message) {
 			std::vector<std::string> data;
 			boost::split(data, users, boost::is_any_of(","));
 			BOOST_FOREACH(std::string u, data) {
+				if (u.empty()) continue;
+
 				GET_PROPERTY(alias, "USER", u, "FULLNAME");
 				GET_PROPERTY(mood_text, "USER", u, "MOOD_TEXT");
 				GET_PROPERTY(st, "USER", u, "ONLINESTATUS");
